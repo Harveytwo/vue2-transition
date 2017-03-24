@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Overview from '@/components/Overview'
 import CssTransition from '@/components/CssTransition'
 import JsTransition from '@/components/JsTransition'
+import UlTransition from '@/components/UlTransition'
 
 Vue.use(Router)
 
@@ -20,6 +21,10 @@ export default new Router({
       path: '/jstranstion',
       name: 'JsTransition',
       component: JsTransition
+    },{
+      path: '/ultranstion',
+      name: 'UlTransition',
+      component: UlTransition
     },
   ]
 })

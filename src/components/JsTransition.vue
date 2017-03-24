@@ -1,7 +1,7 @@
 <template>
   <div class="nav">
     <h1>{{ msg }}</h1>
-
+    
     <p class="on">以下是关于 JS 过渡的一些 demo</p>
 
 		<button @click="coverShow = !coverShow">js 弹出层</button>
@@ -67,10 +67,90 @@
     </transition-group>
     </div>
     
+    <my-special-transition v-show="show">
+      <p>可复用的过渡</p>
+    </my-special-transition>
+    
+
+    <my-transition v-if="show">
+      <p>我不造啊啊</p>
+    </my-transition>
+
+    <div v-demo="{ color: 'white', text: 'hello!' }"></div>
+
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+
+Vue.directive('demo', function (el, binding) {
+  console.log(binding.value.color) // => "white"
+  console.log(binding.value.text)  // => "hello!"
+})
+
+Vue.component('my-special-transition', {
+  template: '\
+    <transition\
+      name="very-special-transition"\
+      mode="out-in"\
+      v-on:before-enter="beforeEnter"\
+      v-on:enter="enter"\
+      v-on:leave="leave"\
+    >\
+      <slot></slot>\
+    </transition>\
+  ',
+  methods: {
+    beforeEnter: function (el) {
+      el.style.opacity = 0
+    },
+    enter: function (el, done) {
+      Velocity(el, { opacity: 1, scale: '1.3' }, { duration: 300 })
+      Velocity(el, { scale: '1' }, { complete: done })
+    },
+    leave: function (el, done) {
+      Velocity(el, { scale: '1.5' }, { duration: 800 })
+      Velocity(el, {
+        scale: '.2',
+        opacity: 0
+      }, { complete: done })
+    },
+  }
+})
+
+// 函数组件
+Vue.component('my-transition', {
+  functional: true,
+  render: function (createElement, context) {
+    var data = {
+      props: {
+        name: 'very-special-transition',
+        mode: 'out-in'
+      },
+      on: {
+        // 这里有关 enter 的事件都触发不了，不造为啥
+        beforeEnter: function (el) {
+          el.style.opacity = 0
+        },
+        enter: function (el, done) {
+          Velocity(el, { opacity: 1, transformPosition: '20% 40%', scale: '1.3' }, { duration: 300 })
+          Velocity(el, { scale: '1' }, { complete: done })
+        },
+        leave: function (el, done) {
+          Velocity(el, { translateX: '82px' }, { duration: 800 })
+          Velocity(el, { rotateZ: '30deg' }, { loop: 2 })
+          Velocity(el, {
+            scale: '.2',
+            opacity: 0
+          }, { complete: done })
+        }
+      }
+    }
+    return createElement('transition', data, context.children)
+  }
+})
+
 export default {
   name: 'hello',
   data () {
@@ -78,7 +158,6 @@ export default {
       msg: 'Welcome to JsTransition.vue page',
       show: true,
       coverShow: false,
-      
     }
   },
   methods: {

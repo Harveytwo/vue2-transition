@@ -22,7 +22,7 @@ export default {
         { 'title' : '过渡概述', to : 'Overview' },
         { 'title' : 'css 过渡', to : 'CssTransition' },
         { 'title' : 'js 过渡', to:'JsTransition' },
-        // { 'title' : '组件过渡', to:'/component' },
+        { 'title' : '列表过渡', to:'UlTransition' },
         // { 'title' : '过渡状态', to:'/status' }
       ]
     }
